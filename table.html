@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUMOlJCMKz9JhtLsahW_XVOCOFNqoG7Ys&callback=initMap"async defer></script>
+    <title>ONESOS</title>
+	<link rel="stylesheet" href="./style.css">
+    <script>
+        function showMap(latitude,longitude){
+            var e = document.getElementById('map');
+            var mrhi = new google.maps.LatLng(latitude,longitude)
+
+            var opts = {
+                center : mrhi,
+                zoom : 17
+            }
+            var map = new google.maps.Map(e,opts)
+
+            var marker = new google.maps.Marker({
+                position: mrhi,
+                title : "asd"
+            });
+            
+            marker.setMap(map)
+        }
+    </script>
+</head>
+<header>
+	<h2><a href="table.html">&nbspONESOS&nbsp</a></h2>
+		<nav><h2>
+		</h2></nav>
+</header>
+<body>
+	<br>
+	<div align="center" style="width: 100%">
+	    <div id="map" style="height: 320px;"></div>
+		<div style="overflow:auto; height: 400px;">
+			<table id="accidentRecordTable">
+				<thead id="tableHeader">
+					<tr class ="head">
+						<th>일시</th>
+						<th>내용</th>
+						<th>위치</th>
+					</tr>
+				<thead>
+			</table>
+		</div>
+		<pre id="object"></pre>
+	</div>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-database.js"></script>
+    
+<script type="module">
+
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
+    var firebaseConfig = {
+      apiKey: "AIzaSyAGcHYMEq3ZSdCTj6eEkEZy2m-IHENFh98",
+      authDomain: "myren-5a547.firebaseapp.com",
+      databaseURL: "https://myren-5a547-default-rtdb.firebaseio.com",
+      projectId: "myren-5a547",
+      storageBucket: "myren-5a547.appspot.com",
+      messagingSenderId: "789517072518",
+      appId: "1:789517072518:web:2c6f4e557537356ecd7907",
+      measurementId: "G-04JE7VERWK"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    // firebase에서 읽기
+    var demo = document.getElementById("demo");
+    var preObject = document.getElementById("object");
+    var dbRef = firebase.database().ref('/MyRen/DrivingRecord');
+    
+
+    //메세지 읽기
+    var i = 0;
+   dbRef.on('child_added', function(snapshot) {
+       var data = snapshot.val();
+      var dbAccidentType = data.accidentType;
+        var dbAddress = data.address;
+        var dbDate = data.date;
+        var dbKey = data.key;
+        var dbLatitude = data.latitude;
+        var dbLongitude = data.longitude;
+        
+        var table = document.getElementById("accidentRecordTable");
+        
+        var td1 = document.createElement("td");
+        var td2 = document.createElement("td");
+        var td3 = document.createElement("td");
+
+        var tr1 = document.createElement("tr"); 
+		
+		showMap(36.8522448,127.1502565);
+		
+      if(dbAccidentType != undefined){
+        if(i>0){
+            var tr2 = document.getElementById(i-1); 
+            table.insertBefore(tr1,tr2);
+            tr1.id = i;
+            var mapclick = document.getElementById(i);
+            mapclick.addEventListener('click', function(){
+                showMap(dbLatitude,dbLongitude);
+            })
+            td1.innerHTML = dbDate;
+            tr1.appendChild(td1)
+            td2.innerHTML = dbAccidentType;  
+            tr1.appendChild(td2);
+            td3.innerHTML = dbAddress;
+            tr1.appendChild(td3);
+            }
+            else{
+            table.appendChild(tr1);
+            tr1.id = i;
+            var mapclick = document.getElementById(i);
+            mapclick.addEventListener('click', function(){
+                showMap(dbLatitude,dbLongitude);
+            })
+            td1.innerHTML = dbDate;
+            tr1.appendChild(td1)
+            td2.innerHTML = dbAccidentType;  
+            tr1.appendChild(td2);
+            td3.innerHTML = dbAddress;
+            tr1.appendChild(td3);
+        }
+            i++;
+      }
+      
+    
+    
+   });
+  </script>
+
+  
+</body>
+</html>
