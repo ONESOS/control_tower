@@ -5,8 +5,73 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAUMOlJCMKz9JhtLsahW_XVOCOFNqoG7Ys&callback=initMap"async defer></script>
-    <title>ONESOS</title>
-	<link rel="stylesheet" href="./style.css">
+    <title>Myren</title>
+    <style>
+        #map{
+            width: 100%;
+            height: 500px;
+            background-color: #eaeaea;
+            box-shadow:  0 5px 10px -5px #b6b5b5 inset ;
+        }
+        body{
+            background-color: #D6D6D6;
+            padding-left: 0px;
+            margin: 0px;
+        }
+        header{
+            width: 100%;
+            height: 90px;
+            background-color: #FFFFFF;
+            box-shadow: 3px 3px 3px 3px #b6b5b5;
+            z-index: 1;
+        }
+        #topLogo{
+            margin-top: 30px;
+            margin-left: 30px;
+        }
+        main{
+            width: 70%;
+            margin-left: 15%;
+            display: inline-block;
+            text-align: center;
+            background-color: #FFFFFF;
+            
+        }
+        td{
+            padding: 10px;
+            border-bottom: 1px solid #D6D6D6;
+            border-top: 1px solid #D6D6D6;
+            border-right: 1px solid #D6D6D6;
+            border-left: 1px solid #D6D6D6;
+            background-color: #f7f7f7;
+        }
+        
+        table{
+            margin-left: 10px;
+            border-radius: 15px;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: none;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+            float: left;
+            margin-right: 80px;
+            
+        }
+        #user{
+            width: 370px;
+            margin-top: 15px;
+            float: left;
+            border: 1px solid #D6D6D6;
+            border-radius: 10px;
+            text-align: left;
+            padding-left: 10px;
+            padding-right: 10px;
+            font-size: 14px;
+        }
+    </style>
+
     <script>
         function showMap(latitude,longitude){
             var e = document.getElementById('map');
@@ -20,35 +85,56 @@
 
             var marker = new google.maps.Marker({
                 position: mrhi,
-                title : "asd"
+                title : "위치"
             });
             
             marker.setMap(map)
+            
         }
     </script>
 </head>
-<header>
-	<h2><a href="table.html">&nbspONESOS&nbsp</a></h2>
-		<nav><h2>
-		</h2></nav>
-</header>
 <body>
-	<br>
-	<div align="center" style="width: 100%">
-	    <div id="map" style="height: 320px;"></div>
-		<div style="overflow:auto; height: 400px;">
-			<table id="accidentRecordTable">
-				<thead id="tableHeader">
-					<tr class ="head">
-						<th>일시</th>
-						<th>내용</th>
-						<th>위치</th>
-					</tr>
-				<thead>
-			</table>
-		</div>
-		<pre id="object"></pre>
-	</div>
+
+    <header>
+        <img src="images/toplogo.png" id="topLogo" alt="topLogo" width="159px" height="26px">
+        <span>　　Database　　</span>
+        <span>Firebase + Realtime + Web</span> 
+    </header>
+    <main>
+    <div id="map">
+        <br><br><br><br>
+        <br><br><br><br>
+        <br><br>
+        선택된 데이터가 없습니다
+    </div>
+
+    <table border="1" id="accidentRecordTable">
+    
+    </table>
+
+    <div id="user">
+        <p><span>유저 정보　　</span><span id="userName">-</span></p>
+        <hr>
+        <p><span style="margin-right:41.5px;">연 락 처</span><span id="userPhone">-</span></p>
+        <hr>
+        <p><span>차량 정보　　</span><span id="carNumber">-</span></p>
+        <hr>
+        <p><span>보험 정보　　</span><span id="insuranceCompany">-</span></p>
+        <hr>
+        <p><span>사고 유형　　</span><span id="crash">-</span></p>
+        <hr>
+        <p><span>발생 시각　　</span><span id="crashTime">-</span></p>
+        <hr>
+        <p><span>식별 토큰　　</span><span id="token">-</span></p>
+        <hr>
+        <p><span>위도/경도　　</span><span id="lalo">-</span></p>
+ 
+    </div>
+    
+    </main>
+
+    
+
     <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-analytics.js"></script>
@@ -74,16 +160,15 @@
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
     // firebase에서 읽기
-    var demo = document.getElementById("demo");
-    var preObject = document.getElementById("object");
     var dbRef = firebase.database().ref('/MyRen/DrivingRecord');
+    
     
 
     //메세지 읽기
     var i = 0;
-   dbRef.on('child_added', function(snapshot) {
-       var data = snapshot.val();
-      var dbAccidentType = data.accidentType;
+	dbRef.on('child_added', function(snapshot) {
+	    var data = snapshot.val();
+		var dbAccidentType = data.accidentType;
         var dbAddress = data.address;
         var dbDate = data.date;
         var dbKey = data.key;
@@ -91,51 +176,78 @@
         var dbLongitude = data.longitude;
         
         var table = document.getElementById("accidentRecordTable");
-        
+
         var td1 = document.createElement("td");
         var td2 = document.createElement("td");
         var td3 = document.createElement("td");
 
-        var tr1 = document.createElement("tr"); 
-		
-		showMap(36.8522448,127.1502565);
-		
-      if(dbAccidentType != undefined){
-        if(i>0){
+        var tr1 = document.createElement("tr");
+
+        //  showMap(36.8522448,127.1502565); 마지막 정보 보여주기
+
+		if(dbAccidentType != undefined){
             var tr2 = document.getElementById(i-1); 
             table.insertBefore(tr1,tr2);
+            // table.appendChild(tr1);
             tr1.id = i;
             var mapclick = document.getElementById(i);
             mapclick.addEventListener('click', function(){
                 showMap(dbLatitude,dbLongitude);
+                var userRef = firebase.database().ref('/MyRen/UserAccount');
+                userRef.on('child_added', function(snapshot) {
+                    var userData = snapshot.val();
+                    var userCarNumber = userData.carNumber
+                    var userCarType = userData.carType
+                    var userDisplacement = userData.displacement
+                    var userInsuranceCompany = userData.insuranceCompany
+                    var userFuel = userData.fuel
+                    var userToken = userData.idToken
+                    var userName = userData.name
+                    var userParentPhoneNumber = userData.parentPhoneNumber
+
+                    if(dbKey == userToken){
+                        console.log(userData);
+                        document.getElementById("userName").innerText = userName;
+                        document.getElementById("userPhone").innerText = userParentPhoneNumber;
+                        document.getElementById("carNumber").innerText = userCarNumber + " "  + userCarType +" " + userDisplacement + " " + userFuel;
+                        document.getElementById("insuranceCompany").innerText = userInsuranceCompany;
+                        document.getElementById("crash").innerText = dbAccidentType;
+                        document.getElementById("crashTime").innerText = dbDate;
+                        document.getElementById("token").innerText = userToken;
+                        document.getElementById("lalo").innerText = dbLatitude + " / " + dbLongitude;
+                    }
+                });
+                mapclick.style.color = "red";
             })
-            td1.innerHTML = dbDate;
-            tr1.appendChild(td1)
-            td2.innerHTML = dbAccidentType;  
-            tr1.appendChild(td2);
-            td3.innerHTML = dbAddress;
-            tr1.appendChild(td3);
-            }
-            else{
-            table.appendChild(tr1);
-            tr1.id = i;
-            var mapclick = document.getElementById(i);
-            mapclick.addEventListener('click', function(){
-                showMap(dbLatitude,dbLongitude);
+            mapclick.addEventListener('mouseout', function(){
+                mapclick.style.color = "black";
             })
-            td1.innerHTML = dbDate;
+            showMap(dbLatitude,dbLongitude);
+            
+            td1.innerHTML = dbAccidentType;
+            td1.style.borderRight = "none"
+            td1.style.borderTopLeftRadius = "10px"
+            td1.style.borderBottomLeftRadius = "10px"
+            td1.style.fontWeight = "bold"
+            td1.style.textAlign = "left"
             tr1.appendChild(td1)
-            td2.innerHTML = dbAccidentType;  
+            
+            td2.innerHTML = dbAddress;  
+            td2.style.borderLeft = "none";
+            td2.style.borderRight = "none"
+            td2.style.fontSize = "13px"
             tr1.appendChild(td2);
-            td3.innerHTML = dbAddress;
+            
+            td3.innerHTML = dbDate;
+            td3.style.borderLeft = "none";
+            td3.style.borderTopRightRadius = "10px"
+            td3.style.borderBottomRightRadius = "10px"
+            td3.style.fontSize = "13px"
             tr1.appendChild(td3);
-        }
-            i++;
-      }
-      
+            i++
+		}
+	});
     
-    
-   });
   </script>
 
   
